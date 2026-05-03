@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>My Tasks</h1>
+        
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+
+        <form action="/tasks" method="POST">
+            <input type="text" name="title" placeholder="Task Title*" required>
+            <input type="text" name="description" placeholder="Description">
+            <input type="text" name="category" placeholder="Category">
+            <input type="date" name="dueDate">
+            <button type="submit">Add Task</button>
+        </form>
+
+        <hr>
+
+        <ul>
+            <% tasks.forEach(task => { %>
+                <li class="<%= task.completed ? 'done' : '' %>">
+                    <strong><%= task.title %></strong> - <%= task.category %>
+                    <p><%= task.description %></p>
+                    <small>Due: <%= task.dueDate ? task.dueDate.toDateString() : 'N/A' %></small>
+                    
+                    <div class="actions">
+                        <% if (!task.completed) { %>
+                            <form action="/tasks/<%= task._id %>/complete" method="POST">
+                                <button type="submit" class="btn-complete">Complete</button>
+                            </form>
+                        <% } 
+                        else { %>
+                            <span style="color: green;">✓ Done</span>
+                        <% } %>
+
+                        <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" style="display:inline;">
+                            <button class="btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+</body>
+</html>
